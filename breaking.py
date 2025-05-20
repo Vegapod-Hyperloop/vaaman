@@ -8,4 +8,3 @@ def breaking_rec(message, uarts):
         uarts (dict): Dictionary of all UART objects.
     """
     # logic.send_data('UART1', uarts['UART1'], message, 'A')
-    atharva
