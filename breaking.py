@@ -1,8 +1,5 @@
 import logic
-import breaking
-import cooling
-
-def process_and_respond(uart_name, source_letter, message, uarts):
+def breaking_rec(message, uarts):
     """    
     Args:
         uart_name (str): Name of the UART that received the message.
@@ -10,7 +7,5 @@ def process_and_respond(uart_name, source_letter, message, uarts):
         message (str): The received message.
         uarts (dict): Dictionary of all UART objects.
     """
-    if source_letter == 'A':
-        breaking.breaking_rec(message, uarts)
-    if source_letter == 'B':
-        cooling.cooling_rec(message, uarts)
+    # logic.send_data('UART1', uarts['UART1'], message, 'A')
+    
