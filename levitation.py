@@ -1,5 +1,5 @@
 import main
-def cooling_rec(message, uarts):
+def levitation_rec(message, uarts):
     """    
     Args:
         uart_name (str): Name of the UART that received the message.

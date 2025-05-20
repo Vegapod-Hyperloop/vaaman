@@ -1,7 +1,7 @@
-import logic
+import main
 import breaking
 import cooling
-
+import battery
 def process_and_respond(uart_name, source_letter, message, uarts):
     """    
     Args:
@@ -14,3 +14,5 @@ def process_and_respond(uart_name, source_letter, message, uarts):
         breaking.breaking_rec(message, uarts)
     if source_letter == 'B':
         cooling.cooling_rec(message, uarts)
+    if source_letter == 'C':
+        battery.battery_rec(message, uarts)

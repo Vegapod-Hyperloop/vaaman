@@ -1,4 +1,4 @@
-import logic
+import main
 def breaking_rec(message, uarts):
     """    
     Args:
@@ -7,4 +7,3 @@ def breaking_rec(message, uarts):
         message (str): The received message.
         uarts (dict): Dictionary of all UART objects.
     """
-    # logic.send_data('UART1', uarts['UART1'], message, 'A')
