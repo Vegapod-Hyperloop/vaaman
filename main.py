@@ -131,9 +131,9 @@ async def send_ws_messages():
         except queue.Empty:
             await asyncio.sleep(0.1)
 
+uarts = {}
 async def main():
     # Initialize UARTs
-    uarts = {}
     stop_events = {}
     threads = []
 
