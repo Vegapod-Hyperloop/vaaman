@@ -7,4 +7,4 @@ def battery_rec(message, uarts):
         message (str): The received message.
         uarts (dict): Dictionary of all UART objects.
     """
-    
+    #Arbat Chutiya hai
