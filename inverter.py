@@ -26,6 +26,10 @@ def inverter_rec(message, uarts):
         LIEF = values[10] == '1'
         RIEF = values[11] == '1'
 
+        if RIEF or LIEF:
+            logging.add_to_log('RIEF or LIEF error raised', 'inverter')
+            mvcu.handle_shutdown()
+            return
         for i, CS in enumerate([CS1, CS2, CS3, CS4, CS5, CS6], 1):
             if CS > 35.0:
                 logging.add_to_log(f"{CS} > 35.0", 'inverter')

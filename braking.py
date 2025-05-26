@@ -68,11 +68,11 @@ def braking_rec(message, uarts=None):
         logging.error(f"Error parsing message {message}: {str(e)}")
         raise ValueError(f"Invalid value format in string: {str(e)}") from e
 
-# Example usage
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    try:
-        result = breaking_rec('B+$6.5:7.3:8.7:9.2:1:1:0:1:0:1:0:1:0@')
-        print(result)
-    except ValueError as e:
-        print(f"Error: {e}")
+# # Example usage
+# if __name__ == "__main__":
+#     logging.basicConfig(level=logging.INFO)
+#     try:
+#         result = braking_rec('B+$6.5:7.3:8.7:9.2:1:1:0:1:0:1:0:1:0@')
+#         print(result)
+#     except ValueError as e:
+#         print(f"Error: {e}")

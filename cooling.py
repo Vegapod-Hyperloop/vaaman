@@ -1,4 +1,4 @@
-import main
+# import main
 import logging
 import mvcu
 def cooling_rec(message, uarts):
@@ -53,6 +53,10 @@ def cooling_rec(message, uarts):
             return
         #TODO: Verify Level sensor value  
         if LS < 20:
+            mvcu.handle_cooling('0')
+            mvcu.handle_shutdown()
+            return
+        if FS1 < 5000 or FS2 < 5000:
             mvcu.handle_cooling('0')
             mvcu.handle_shutdown()
             return

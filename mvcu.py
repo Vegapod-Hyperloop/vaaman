@@ -3,7 +3,8 @@ import braking
 import cooling
 import battery
 import inverter 
-
+import levitation_front
+import levitation_rear
 def process_and_respond(uart_name, source_letter, message, uarts):
     """    
     Args:
@@ -20,8 +21,10 @@ def process_and_respond(uart_name, source_letter, message, uarts):
         cooling.cooling_rec(message, uarts)
     if source_letter == 'D':
         inverter.inverter_rec(message, uarts)
-    # if source_letter == 'E':
-        
+    if source_letter == 'E':
+        levitation_front.levitation_front_rec(message, uarts)
+    if source_letter == 'F':
+        levitation_rear.levitation_rear_rec(message, uarts)
 
 
 def handle_shutdown():
@@ -33,3 +36,7 @@ def handle_cooling(state):
         main.send_data('C', main.uarts['UART3'], '#1&', 'C')
     else:
         main.send_data('C', main.uarts['UART3'], '#0&', 'C')
+
+def handle_imu_to_lev(front_msg, rear_msg):
+    main.send_data('E', main.uarts['UART5'], front_msg, 'E')
+    main.send_data('F', main.uarts['UART6'], rear_msg, 'F')
