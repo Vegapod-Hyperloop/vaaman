@@ -1,7 +1,7 @@
 import main
 import braking
-#import cooling
-#import battery
+import cooling
+import battery
 #import inverter 
 #import levitation_front
 #import levitation_rear
@@ -13,15 +13,13 @@ def process_and_respond(uart_name, source_letter, message, uarts):
         message (str): The received message.
         uarts (dict): Dictionary of all UART objects.
     """
-    if source_letter == 'B':
-        #print(message)
-        print(message)
-        braking.braking_rec(message, uarts)
-#        battery.battery_rec(message, uarts)
+    #if source_letter == 'A':
+        #battery.battery_rec(message, uarts)
 #    if source_letter == 'B':
 #        braking.braking_rec(message, uarts)
-#    if source_letter == 'C':
-#        cooling.cooling_rec(message, uarts)
+    if source_letter == 'C':        
+        #print(uart_name, message)
+        cooling.cooling_rec(message, uarts)
 #    if source_letter == 'D':
 #        inverter.inverter_rec(message, uarts)
 #    if source_letter == 'E':

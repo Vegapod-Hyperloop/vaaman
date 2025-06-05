@@ -77,14 +77,14 @@ def receive_data(uart_name, uart, stop_event, source_letter, uarts):
                         try:
                             message = packet.decode('utf-8', errors='ignore')
                             formatted_message = f"{source_letter}={message}"
-                            
+                            print(source_letter, message)
                             # Trigger processing and response after every message
                             mvcu.process_and_respond(uart_name, source_letter, message, uarts)
                             
                             # Continue with original functionality
-                            with print_lock:
-                                print(f"{uart_name} received: {formatted_message}")
-                            message_queue.put(formatted_message)
+                            #with print_lock:
+                            #    print(f"{uart_name} received: {formatted_message}")
+                            #message_queue.put(formatted_message)
                         except UnicodeDecodeError:
                             with print_lock:
                                 print(f"{uart_name}: Invalid UTF-8 data received")

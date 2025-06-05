@@ -7,14 +7,9 @@ def braking_rec(message, uarts=None):
         message (str): The received message.
         uarts (dict, optional): Dictionary of all UART objects. Defaults to None.
     """
-    input_string = message[2:] if message.startswith('B+') else '$0:0:0:2:0:0:0:0:0:0:0:0:0@'
-    #print(message)
-    #logging.add_to_log(message, 'braking')
-    if not (input_string.startswith('$') and input_string.endswith('@')):
-        raise ValueError("Input string must start with '$' and end with '@'")
     
-    #values = input_string[1:-1].split(':')
     values = message.split(":")
+    print(len(values))
     if len(values) != 13:
         raise ValueError("Expected 13 values in the string")
     

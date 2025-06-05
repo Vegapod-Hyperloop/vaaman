@@ -9,13 +9,9 @@ def cooling_rec(message, uarts):
         message (str): The received message.
         uarts (dict): Dictionary of all UART objects.
     """
-    input_string = message[2:] if message.startswith('C+') else '$0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0@'
-    logging.add_to_log(message, 'cooling')
-    
-    if not (input_string.startswith('$') and input_string.endswith('@')):
-        raise ValueError("Input string must start with '$' and end with '@'")
-    
-    values = input_string[1:-1].split(':')
+    print(message)
+    values = message.split(':')
+    print(len(values))
     if len(values) != 27:
         raise ValueError("Expected 13 values in the string")
     try:
@@ -62,5 +58,5 @@ def cooling_rec(message, uarts):
             return
         return
     except ValueError as e:
-        logging.error(f"Error parsing message {message}: {str(e)}")
+        #logging.error(f"Error parsing message {message}: {str(e)}")
         raise ValueError(f"Invalid value format in string: {str(e)}") from e
