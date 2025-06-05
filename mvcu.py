@@ -1,10 +1,10 @@
 import main
 import braking
-import cooling
-import battery
-import inverter 
-import levitation_front
-import levitation_rear
+#import cooling
+#import battery
+#import inverter 
+#import levitation_front
+#import levitation_rear
 def process_and_respond(uart_name, source_letter, message, uarts):
     """    
     Args:
@@ -13,23 +13,26 @@ def process_and_respond(uart_name, source_letter, message, uarts):
         message (str): The received message.
         uarts (dict): Dictionary of all UART objects.
     """
-    if source_letter == 'A':
-        battery.battery_rec(message, uarts)
     if source_letter == 'B':
+        #print(message)
+        print(message)
         braking.braking_rec(message, uarts)
-    if source_letter == 'C':
-        cooling.cooling_rec(message, uarts)
-    if source_letter == 'D':
-        inverter.inverter_rec(message, uarts)
-    if source_letter == 'E':
-        levitation_front.levitation_front_rec(message, uarts)
-    if source_letter == 'F':
-        levitation_rear.levitation_rear_rec(message, uarts)
+#        battery.battery_rec(message, uarts)
+#    if source_letter == 'B':
+#        braking.braking_rec(message, uarts)
+#    if source_letter == 'C':
+#        cooling.cooling_rec(message, uarts)
+#    if source_letter == 'D':
+#        inverter.inverter_rec(message, uarts)
+#    if source_letter == 'E':
+#        levitation_front.levitation_front_rec(message, uarts)
+#    if source_letter == 'F':
+#        levitation_rear.levitation_rear_rec(message, uarts)
 
-
+uarts = main.initialize_uarts()
 def handle_shutdown():
-    main.send_data('A', main.uarts['UART1'], '#0:1&', 'A')
-    main.send_data('B', main.uarts['UART2'], '#1:1&', 'B')
+    #main.send_data('A', main.uarts['UART1'], '#0:1&', 'A')
+    main.send_data('UART2', uarts, '#1:1&', 'B')
 
 def handle_cooling(state):
     if state == '1':

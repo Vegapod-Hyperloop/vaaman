@@ -5,6 +5,7 @@ import threading
 import time
 import queue
 import mvcu
+
 # UART configurations
 UART_PORTS = {
     'UART1': {'port': '/dev/ttyPERI0', 'letter': 'A'},
@@ -16,7 +17,7 @@ UART_PORTS = {
 }
 BAUDRATE = 1500000
 TIMEOUT = 5  # Timeout in seconds
-
+uarts = {}
 # WebSocket configurations
 WS_PORT = 8456
 
@@ -29,6 +30,26 @@ connected_clients = set()
 # Lock for thread-safe printing
 print_lock = threading.Lock()
 
+def initialize_uarts():
+    """Initialize UARTs and return the uarts dictionary."""
+    global uarts
+    for uart_name, uart_info in UART_PORTS.items():
+        try:
+            uart = serial.Serial(
+                port=uart_info['port'],
+                baudrate=BAUDRATE,
+                bytesize=serial.EIGHTBITS,
+                parity=serial.PARITY_NONE,
+                stopbits=serial.STOPBITS_ONE,
+                timeout=TIMEOUT,
+            )
+            uarts[uart_name] = uart
+            with print_lock:
+                print(f"{uart_name} initialized on {uart_info['port']}")
+        except serial.SerialException as e:
+            with print_lock:
+                print(f"{uart_name}: Error opening or configuring UART: {e}")
+    return uarts
 
 def receive_data(uart_name, uart, stop_event, source_letter, uarts):
     """Function to handle receiving data for a UART."""
@@ -74,9 +95,12 @@ def receive_data(uart_name, uart, stop_event, source_letter, uarts):
                 print(f"{uart_name}: Receive error: {e}")
             break
 
-def send_data(uart_name, uart, message, dest_letter):
+def send_data(uart_name, uarts, message, dest_letter):
     """Function to send data to a UART."""
     try:
+        if uart_name not in uarts:
+            raise KeyError(f"UART {uart_name} not found in uarts dictionary")
+        uart = uarts[uart_name]
         packet = f"{message}!".encode('utf-8')
         uart.write(packet)
         uart.flush()
@@ -85,6 +109,9 @@ def send_data(uart_name, uart, message, dest_letter):
     except serial.SerialException as e:
         with print_lock:
             print(f"{uart_name}: Send error: {e}")
+    except KeyError as e:
+        with print_lock:
+            print(f"{uart_name}: {e}")
 
 async def handler(websocket, uarts):
     """Handle WebSocket connections."""
@@ -100,7 +127,7 @@ async def handler(websocket, uarts):
                     payload = message[3:-1]
                     for uart_name, uart_info in UART_PORTS.items():
                         if uart_info['letter'] == dest_letter:
-                            send_data(uart_name, uarts[uart_name], payload, dest_letter)
+                            send_data(uart_name, uarts, payload, dest_letter)
                             break
                     else:
                         with print_lock:
@@ -131,35 +158,17 @@ async def send_ws_messages():
         except queue.Empty:
             await asyncio.sleep(0.1)
 
-uarts = {}
 async def main():
     # Initialize UARTs
+    initialize_uarts()
     stop_events = {}
     threads = []
 
     try:
-        for uart_name, uart_info in UART_PORTS.items():
-            try:
-                uart = serial.Serial(
-                    port=uart_info['port'],
-                    baudrate=BAUDRATE,
-                    bytesize=serial.EIGHTBITS,
-                    parity=serial.PARITY_NONE,
-                    stopbits=serial.STOPBITS_ONE,
-                    timeout=TIMEOUT,
-                )
-                uarts[uart_name] = uart
-                stop_events[uart_name] = threading.Event()
-                with print_lock:
-                    print(f"{uart_name} initialized on {uart_info['port']}")
-            except serial.SerialException as e:
-                with print_lock:
-                    print(f"{uart_name}: Error opening or configuring UART: {e}")
-                return
-
         # Start UART receive threads
         for uart_name, uart_info in UART_PORTS.items():
             if uart_name in uarts:
+                stop_events[uart_name] = threading.Event()
                 receive_thread = threading.Thread(
                     target=receive_data,
                     args=(uart_name, uarts[uart_name], stop_events[uart_name], uart_info['letter'], uarts),

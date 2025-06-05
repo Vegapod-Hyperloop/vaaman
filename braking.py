@@ -1,4 +1,4 @@
-import logging
+#import logging
 import mvcu
 
 def braking_rec(message, uarts=None):
@@ -7,13 +7,14 @@ def braking_rec(message, uarts=None):
         message (str): The received message.
         uarts (dict, optional): Dictionary of all UART objects. Defaults to None.
     """
-    input_string = message[2:] if message.startswith('B+') else '$0:0:0:0:0:0:0:0:0:0:0:0:0@'
-    logging.add_to_log(message, 'breaking')
-    
+    input_string = message[2:] if message.startswith('B+') else '$0:0:0:2:0:0:0:0:0:0:0:0:0@'
+    #print(message)
+    #logging.add_to_log(message, 'braking')
     if not (input_string.startswith('$') and input_string.endswith('@')):
         raise ValueError("Input string must start with '$' and end with '@'")
     
-    values = input_string[1:-1].split(':')
+    #values = input_string[1:-1].split(':')
+    values = message.split(":")
     if len(values) != 13:
         raise ValueError("Expected 13 values in the string")
     
@@ -32,19 +33,19 @@ def braking_rec(message, uarts=None):
         TR = values[10] == '1'
         BL = values[11] == '1'
         BR = values[12] == '1'
-
-
+        print("Values:", values)
         
         for i, p in enumerate([P1, P2, P3, P4], 1):
             if not 5.5 <= p <= 10.0:
-                logging.add_to_log(f"P{i} value {p} is out of range [5.5, 10.0]", 'breaking')
+                #logging.add_to_log(f"P{i} value {p} is out of range [5.5, 10.0]", 'breaking')
+                print("issue")
                 mvcu.handle_shutdown()
 
                 # raise ValueError(f"P{i} value {p} is out of range [5.5, 10.0]")
 
         for i, e in enumerate([E1, E2, E3, E4], 1):
             if e == '1':
-                logging.add_to_log(f"Error in E{i}", 'breaking')
+                #logging.add_to_log(f"Error in E{i}", 'breaking')
                 mvcu.handle_shutdown()
                 # raise ValueError(f"E{i} value {e} is out of range [0, 1]")
         
@@ -65,7 +66,7 @@ def braking_rec(message, uarts=None):
             'BR': BR
         }
     except ValueError as e:
-        logging.error(f"Error parsing message {message}: {str(e)}")
+        #logging.error(f"Error parsing message {message}: {str(e)}")
         raise ValueError(f"Invalid value format in string: {str(e)}") from e
 
 # # Example usage
