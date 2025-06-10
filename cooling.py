@@ -46,7 +46,7 @@ def cooling_rec(message, uarts):
         TEF = values[24] == '1'
         FSEF = values[25] == '1'
         LSEF = values[26] == '1'
-
+        tempratures = [float(v) for v in values[0:20]]
         if FSEF or LSEF:
             mvcu.handle_cooling('0')
             mvcu.handle_shutdown()
