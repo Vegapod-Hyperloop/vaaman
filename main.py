@@ -5,7 +5,7 @@ import threading
 import time
 import queue
 import mvcu
-
+import json
 # UART configurations
 UART_PORTS = {
     'UART1': {'port': '/dev/ttyPERI0', 'letter': 'A'},
@@ -101,7 +101,7 @@ def send_data(uart_name, uarts, message, dest_letter):
         if uart_name not in uarts:
             raise KeyError(f"UART {uart_name} not found in uarts dictionary")
         uart = uarts[uart_name]
-        packet = f"{message}!".encode('utf-8')
+        packet = f"{message}".encode('utf-8')
         uart.write(packet)
         uart.flush()
         with print_lock:
@@ -120,11 +120,18 @@ async def handler(websocket, uarts):
         while True:
             try:
                 message = await asyncio.wait_for(websocket.recv(), timeout=0.1)
-                with print_lock:
-                    print(f"Received from client: {message}")
-                if len(message) >= 5 and message[1:3] == '+^' and message[-1] == '^':
+                #with print_lock:
+                    #print(f"Received from client: {message!r} (length: {len(message)})")
+                if message[:3] == "ltc":
+                    ltcarr = message.split(':')
+                    with print_lock:
+                        #Here send back the ltcarr[1] back to the ws client
+                        await websocket.send(f"L:{ltcarr[1]}")
+                        continue
+                if len(message) >= 5 and message[1:3] == '+#' and message[-1] == '&':
+                    print(f"Received from client: {message!r} (length: {len(message)})")
                     dest_letter = message[0]
-                    payload = message[3:-1]
+                    payload = message[2:]
                     for uart_name, uart_info in UART_PORTS.items():
                         if uart_info['letter'] == dest_letter:
                             send_data(uart_name, uarts, payload, dest_letter)

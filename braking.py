@@ -8,7 +8,7 @@ def braking_rec(message, uarts=None):
         uarts (dict, optional): Dictionary of all UART objects. Defaults to None.
     """
     input_string = message[2:] if message.startswith('B+') else '$0:0:0:2:0:0:0:0:0:0:0:0:0@'
-    #print(message)
+    print(message)
     #logging.add_to_log(message, 'braking')
     if not (input_string.startswith('$') and input_string.endswith('@')):
         raise ValueError("Input string must start with '$' and end with '@'")
@@ -38,17 +38,17 @@ def braking_rec(message, uarts=None):
         for i, p in enumerate([P1, P2, P3, P4], 1):
             if not 5.5 <= p <= 10.0:
                 #logging.add_to_log(f"P{i} value {p} is out of range [5.5, 10.0]", 'breaking')
-                print("issue")
-                mvcu.handle_shutdown()
+                print("")
+                #mvcu.handle_shutdown()
 
                 # raise ValueError(f"P{i} value {p} is out of range [5.5, 10.0]")
 
         for i, e in enumerate([E1, E2, E3, E4], 1):
             if e == '1':
                 #logging.add_to_log(f"Error in E{i}", 'breaking')
-                mvcu.handle_shutdown()
+                #mvcu.handle_shutdown()
                 # raise ValueError(f"E{i} value {e} is out of range [0, 1]")
-        
+                print("k")
         #Check for TL, TR, BL, BR if they match with Web Socket 
         return {
             'P1': P1,

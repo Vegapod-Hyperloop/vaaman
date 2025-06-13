@@ -1,5 +1,5 @@
 # import main
-import logging
+#import logging
 import mvcu
 def cooling_rec(message, uarts):
     """    
@@ -9,13 +9,9 @@ def cooling_rec(message, uarts):
         message (str): The received message.
         uarts (dict): Dictionary of all UART objects.
     """
-    input_string = message[2:] if message.startswith('C+') else '$0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0@'
-    logging.add_to_log(message, 'cooling')
+    #logging.add_to_log(message, 'cooling')
     
-    if not (input_string.startswith('$') and input_string.endswith('@')):
-        raise ValueError("Input string must start with '$' and end with '@'")
-    
-    values = input_string[1:-1].split(':')
+    values = message.split(':')
     if len(values) != 27:
         raise ValueError("Expected 13 values in the string")
     try:
@@ -47,9 +43,20 @@ def cooling_rec(message, uarts):
         FSEF = values[25] == '1'
         LSEF = values[26] == '1'
         tempratures = [float(v) for v in values[0:20]]
+        
+        for i, t in enumerate(tempratures, 1):
+            if t >= 80.0:
+                #logging.add_to_log(f"P{i} value {p} is out of range [5.5, 10.0]", 'breaking')
+                print("issue")
+                mvcu.handle_shutdown()
         if FSEF or LSEF:
+            print("Cool off")
             mvcu.handle_cooling('0')
             mvcu.handle_shutdown()
+            return
+        else:
+            print("Cool on")
+            mvcu.handle_cooling('1')
             return
         #TODO: Verify Level sensor value  
         if LS < 20:
@@ -62,5 +69,5 @@ def cooling_rec(message, uarts):
             return
         return
     except ValueError as e:
-        logging.error(f"Error parsing message {message}: {str(e)}")
+        #logging.error(f"Error parsing message {message}: {str(e)}")
         raise ValueError(f"Invalid value format in string: {str(e)}") from e

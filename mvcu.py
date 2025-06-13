@@ -28,14 +28,13 @@ def process_and_respond(uart_name, source_letter, message, uarts):
 
 uarts = main.initialize_uarts()
 def handle_shutdown():
-    #main.send_data('A', main.uarts['UART1'], '#0:1&', 'A')
-    main.send_data('UART2', uarts, '#1:1&', 'B')
+    main.send_data('UART2', uarts, '#0&', 'B')
 
 def handle_cooling(state):
     if state == '1':
-        main.send_data('C', main.uarts['UART3'], '#1&', 'C')
+        main.send_data('UART3', uarts, '#1&', 'C')
     else:
-        main.send_data('C', main.uarts['UART3'], '#0&', 'C')
+        main.send_data('UART3', uarts, '#0&', 'C')
 
 def handle_imu_to_lev(front_msg, rear_msg):
     main.send_data('E', main.uarts['UART5'], front_msg, 'E')
