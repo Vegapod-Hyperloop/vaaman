@@ -2,28 +2,20 @@ import os
 import datetime
 
 def create_log_file():
-    """Create the main log file if it doesn't exist."""
     if not os.path.exists('logs/main.log.txt'):
         with open('logs/main.log.txt', 'w') as f:
             f.write('')
 
 def main_log(message):
-    """Append a message to the main log file with a timestamp."""
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     with open('main.log.txt', 'a') as f:
         f.write(f"[{timestamp}] {message}\n")
 
 def read_log_file():
-    """Read and return the contents of the main log file."""
     with open('/logs/main.log.txt', 'r') as f:
         return f.read()
 
 def add_to_log(message, host):
-    """
-    Add a message to a host-specific log file and the main log file.
-    Each message is prefixed with a timestamp.
-    Creates the host-specific log file if it doesn't exist.
-    """
     try:
         # Ensure the main log file exists
         create_log_file()

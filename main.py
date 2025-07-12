@@ -6,6 +6,9 @@ import time
 import queue
 import mvcu
 import json
+#import vcust
+import vcustws
+import mywindow
 # UART configurations
 UART_PORTS = {
     'UART1': {'port': '/dev/ttyPERI0', 'letter': 'A'},
@@ -13,7 +16,7 @@ UART_PORTS = {
     'UART3': {'port': '/dev/ttyPERI2', 'letter': 'C'},
     'UART4': {'port': '/dev/ttyPERI3', 'letter': 'D'},
     'UART5': {'port': '/dev/ttyPERI4', 'letter': 'E'},
-    'UART6': {'port': '/dev/ttyPERI5', 'letter': 'F'}
+    'UART6': {'port': '/dev/ttyPERI5', 'letter': 'F'},
 }
 BAUDRATE = 1500000
 TIMEOUT = 5  # Timeout in seconds
@@ -29,6 +32,8 @@ connected_clients = set()
 
 # Lock for thread-safe printing
 print_lock = threading.Lock()
+
+#vcuStatus = vcust.atharva()
 
 def initialize_uarts():
     """Initialize UARTs and return the uarts dictionary."""
@@ -172,6 +177,16 @@ async def main():
     threads = []
 
     try:
+        vcu_thread = threading.Thread(
+            target=vcustws.start_server,
+            daemon=True
+        )
+        window_thread = threading.Thread(
+            target=mywindow.show_log_viewer,
+            daemon=True
+        )
+        threads.append(vcu_thread)
+        threads.append(window_thread)
         # Start UART receive threads
         for uart_name, uart_info in UART_PORTS.items():
             if uart_name in uarts:
@@ -183,7 +198,10 @@ async def main():
                 )
                 threads.append(receive_thread)
                 receive_thread.start()
-
+        
+        #vcu_thread.start()
+        #window_thread.start()
+        mywindow.log_message("WebSocket server started", "INFO")
         # Start WebSocket server
         async def handler_wrapper(websocket):
             await handler(websocket, uarts)

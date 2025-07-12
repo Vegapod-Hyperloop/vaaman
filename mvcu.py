@@ -3,7 +3,7 @@ import braking
 import cooling
 import battery
 #import inverter 
-#import levitation_front
+import levitation_front
 #import levitation_rear
 def process_and_respond(uart_name, source_letter, message, uarts):
     """    
@@ -21,8 +21,8 @@ def process_and_respond(uart_name, source_letter, message, uarts):
         cooling.cooling_rec(message, uarts)
 #    if source_letter == 'D':
 #        inverter.inverter_rec(message, uarts)
-#    if source_letter == 'E':
-#        levitation_front.levitation_front_rec(message, uarts)
+    if source_letter == 'E':
+        levitation_front.levitation_front_rec(message, uarts)
 #    if source_letter == 'F':
 #        levitation_rear.levitation_rear_rec(message, uarts)
 

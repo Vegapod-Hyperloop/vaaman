@@ -3,7 +3,8 @@ import logging
 import mvcu
 
 def levitation_front_rec(message, uarts):
-
+    print(message)
+    return
     input_string = message[2:] 
     logging.add_to_log(message, 'levitation-front')
     
